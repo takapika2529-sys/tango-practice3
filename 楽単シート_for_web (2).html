@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>楽単シート for web</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--text:#1d2433;--sub:#667085;--pri:#4f46e5;--priT:#fff;--ok:#16a34a;--ng:#dc2626;--bd:#e3e6ee;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141c;--card:#1b1f2b;--text:#e8eaf2;--sub:#98a2b3;--pri:#818cf8;--priT:#12141c;--bd:#2c3242}}
+:root[data-theme="dark"]{--bg:#12141c;--card:#1b1f2b;--text:#e8eaf2;--sub:#98a2b3;--pri:#818cf8;--priT:#12141c;--bd:#2c3242}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;line-height:1.5}
+.wrap{max-width:560px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:4px 0 12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:20px}
+.fc{min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;user-select:none}
+.fc .w{font-size:34px;font-weight:700;word-break:break-word}
+.fc .m{font-size:22px}
+.hint{color:var(--sub);font-size:13px;margin-top:10px}
+.row{display:flex;gap:8px;margin-top:12px}
+.btn{flex:1;padding:12px;border:1px solid var(--bd);background:var(--card);color:var(--text);border-radius:10px;font-size:15px;cursor:pointer}
+.btn.pri{background:var(--pri);color:var(--priT);border-color:var(--pri);font-weight:600}
+.btn.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.btn.ng{background:var(--ng);color:#fff;border-color:var(--ng)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,var(--card))}
+.opt.wrong{border-color:var(--ng);background:color-mix(in srgb,var(--ng) 15%,var(--card))}
+.opts{display:grid;gap:8px;margin-top:14px}
+.opt{text-align:left}
+.q{font-size:30px;font-weight:700;text-align:center;margin:8px 0}
+.box{font-size:12px;color:var(--sub)}
+input{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--text);font-size:15px;margin-top:8px}
+ul{list-style:none;padding:0;margin:14px 0 0}
+li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}
+li div{flex:1;min-width:0}
+li b{display:block}
+li span{color:var(--sub);font-size:14px}
+.del{background:none;border:none;color:var(--ng);font-size:13px;cursor:pointer}
+.bar{display:flex;align-items:center;gap:10px;margin:10px 0;font-size:14px}
+.bar i{display:block;height:14px;border-radius:7px;background:var(--pri);min-width:2px}
+.bar .t{flex:1;background:var(--bd);border-radius:7px;height:14px}
+.bar .l{width:92px;color:var(--sub)}
+.big{font-size:36px;font-weight:700}
+.res,.dex{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;margin-top:12px}
+.g{border:2px solid var(--bd);border-radius:12px;padding:8px;font-size:13px;display:flex;flex-direction:column;word-break:break-word}
+.g b{font-size:15px}.g span{color:var(--sub);font-size:12px}
+.g i{font-style:normal;font-size:11px;font-weight:700;margin-top:2px}
+.g.N{border-color:#94a3b8}.g.R{border-color:#3b82f6}
+.g.S{border-color:#f59e0b;background:color-mix(in srgb,#f59e0b 14%,var(--card))}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{padding:8px 12px;border:1px solid var(--bd);background:var(--bg);color:var(--sub);border-radius:20px;font-size:13px;cursor:pointer}
+textarea{font-family:inherit;resize:vertical}
+details summary{cursor:pointer;padding:6px 0}
+.shop{display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--bd)}
+.shop .si{flex:1;min-width:0}
+.chip.pre{border-color:#f59e0b}
+.ttl{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));background:linear-gradient(160deg,var(--bg),color-mix(in srgb,var(--pri) 28%,var(--bg)))}
+.ttl .logo{font-size:72px;animation:bob 2.4s ease-in-out infinite}
+.ttl h2{font-size:36px;margin:8px 0 0;letter-spacing:.05em}
+.ttl .sub{color:var(--sub);margin-top:6px;font-size:14px}
+.ttl .tstat{margin-top:22px;font-size:15px;background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:6px 16px}
+.ttl .btn{flex:none;width:100%;max-width:260px;margin-top:26px;padding:16px;font-size:18px}
+@keyframes bob{50%{transform:translateY(-10px)}}
+@media (prefers-reduced-motion:reduce){.ttl .logo{animation:none}}
+.stile{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.stile div{background:var(--bg);border-radius:10px;padding:10px;text-align:center}
+.stile b{font-size:22px;display:block}
+.stile span{font-size:12px;color:var(--sub)}
+.chip.on{background:var(--pri);color:var(--priT);border-color:var(--pri);font-weight:600}
+.hud{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:14px}
+.hud .lv{background:var(--pri);color:var(--priT);border-radius:10px;padding:4px 10px;font-weight:700}
+.hud .xp{flex:1}
+.hud .t{height:10px;background:var(--bd);border-radius:5px;overflow:hidden}
+.hud .t i{display:block;height:100%;background:var(--pri);transition:width .3s}
+.hud small{color:var(--sub);font-size:11px}
+.toast{margin-top:12px;padding:10px;border-radius:10px;background:color-mix(in srgb,var(--ok) 15%,var(--card));text-align:center;font-weight:600;font-size:14px}
+.chk{display:flex;gap:10px;align-items:center}
+.chk input{width:auto;margin:0}
+textarea,select{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--text);font-size:15px;margin-top:10px}
+.top{display:flex;align-items:center;gap:10px;margin:4px 0 12px}
+.top h1{margin:0}
+.menu{flex:none;width:40px;height:40px;border:1px solid var(--bd);background:var(--card);color:var(--text);border-radius:10px;font-size:20px;cursor:pointer;line-height:1;padding:0}
+#sb{position:fixed;top:0;left:0;bottom:0;width:240px;max-width:80vw;z-index:6;background:var(--card);border-right:1px solid var(--bd);display:flex;flex-direction:column;padding:calc(16px + env(safe-area-inset-top,0px)) 12px calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-102%);transition:transform .25s ease;overflow-y:auto}
+#sb.open{transform:none;box-shadow:4px 0 24px rgba(0,0,0,.25)}
+#ov{position:fixed;inset:0;z-index:5;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .25s}
+#ov.open{opacity:1;pointer-events:auto}
+.sbt{font-size:18px;font-weight:700;padding:4px 8px 12px}
+#nav{display:flex;flex-direction:column;gap:4px}
+#nav button{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border:none;background:none;color:var(--text);border-radius:10px;font-size:15px;text-align:left;cursor:pointer}
+#nav button.on{background:var(--pri);color:var(--priT);font-weight:600}
+#sbf{margin-top:auto;padding:12px 8px 0;font-size:12px;color:var(--sub)}
+@media (min-width:900px){#sb{transform:none;box-shadow:none}#ov{display:none}.menu{display:none}body{padding-left:240px}}
+@media (prefers-reduced-motion:reduce){#sb,#ov{transition:none}}
+.sw{position:relative;display:block;flex:none;width:44px;height:26px}
+.sw input{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:none;opacity:0;cursor:pointer;z-index:1}
+.sw i{position:absolute;inset:0;display:block;background:var(--bd);border-radius:13px;transition:background .2s}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.sw input:checked+i{background:var(--pri)}
+.sw input:checked+i::after{transform:translateX(18px)}
+li.off div{opacity:.45}
+</style>
+</head>
+<body>
+<div class="ttl" id="ttl"></div>
+<aside id="sb" aria-label="メニュー"><div class="sbt">メニュー</div><nav id="nav"></nav><div id="sbf"></div></aside>
+<div id="ov" onclick="closeSb()"></div>
+<div class="wrap">
+<div class="top"><button class="menu" onclick="toggleSb()" aria-label="メニューを開く">☰</button><h1 onclick="showTitle()" style="cursor:pointer">楽単シート <small style="font-size:13px;color:var(--sub);font-weight:400">for web</small></h1></div>
+<div class="hud" id="hud"></div>
+<div id="app"></div>
+</div>
+<script>
+const K="vocab_v2";
+const UR=[[["settler","入植者","名詞","N","","1.1"],["incredible","信じられない","形容詞","R","","1.1"],["extinct","絶滅した","形容詞","N","","1.1"],["claw","かぎづめ","名詞","N","","1.1"],["ratite","平胸類の","形容詞","N","","1.1"],["wing","翼","名詞","N","","1.1"],["flightless","飛べない","形容詞","R","","1.1"],["kiwi","キーウィ (鳥)","名詞","N","","1.1"],["emu","エミュー(鳥)","名詞","N","","1.1"],["be in for~","(ショックなど)を受けることになる","熟語","R","","1.1"],["in contrast","対照的に","熟語","R","","1.1"],["arrival","到着","名詞","N","","1.2"],["Polynesia","ポリネシア","名詞","R","","1.2"],["carnivore","肉食動物","名詞","R","","1.2"],["predator","捕食動物","名詞","R","","1.2"],["herbivore","草食動物","名詞","R","","1.2"],["variety","いろいろ、多様","名詞","N","a (wide) variety of~･･･いろいろな〜","1.2"],["dune","砂丘","名詞","N","","1.2"],["shrubland","低木地","名詞","R","","1.2"],["berry","ベリー (果実)","名詞","N","","1.2"],["make use of","･･･を利用する、活用する","熟語","R","","1.2"],["hunt","･･･を狩る","動詞","N","","1.3"],["incubate","･･･を孵化する","動詞","R","","1.3"],["forage","食物を探す","動詞","N","","1.3"],["underground","地下の","形容詞","S","","1.3"],["extinction","絶滅","名詞","R","","1.3,3.1"],["lay","･･･を置く、･･･を産む","動詞","N","過去・過去分詞:laid","1.3"],["breeding","繁殖","名詞","R","breeding season･･･繁殖期","1.3"],["chick","ひな","名詞","N","","1.3"],["rapid","速い、急な、急速な","形容詞","N","","1.3"],["come across","･･･に出くわす","熟語","R","","1.3"],["for good","永遠に","熟語","R","","1.3"]],[["advent","出現、到来","名詞","N","","2.1"],["streaming","(インターネット上の) ストリーミング","名詞","R","","2.1"],["attract","･･･を引き付ける","動詞","N","","2.1"],["spectator","観客","名詞","R","","2.1"],["arena","競技場","名詞","N","","2.1"],["gamer","ゲーマー","名詞","N","","2.1"],["compete","競争する、競い合う","動詞","N","","2.1"],["network","ネットワーク","名詞","N","","2.1"],["content","内容、コンテンツ","名詞","N","","2.1"],["limit","限界、制限","名詞","N","the sky is the limit ･･･「空が限界である」 = 限界がない","2.1"],["competitor","参加者,競技者","名詞","R","","2.1"],["electronic","電子の","形容詞","R","","2.1"],["involve","･･･を含む","動詞","N","","2.1"],["highly","非常に、大いに","副詞","N","","2.1"],["competitive","競争の、競争心の強い","形容詞","S","","2.1"],["strictly","厳密に","副詞","R","","2.1"],["regulate","･･･を規制する","動詞","R","","2.1"],["obvious","明白な","形容詞","N","","2.2"],["teamwork","チームワーク","名詞","R","","2.2"],["normally","通常は","副詞","R","","2.2"],["isolate","･･･を孤立させる","動詞","N","","2.2"],["socialize","社交的に交際する","動詞","R","","2.2"],["peer","仲間","名詞","N","","2.2"],["immerse","･･･を浸す","動詞","N","","2.2"],["growth","増加","名詞","N","","2.2"],["scholarship","奨学金","名詞","S","","2.2"],["engineering","工学(技術)","名詞","S","","2.2"],["management","経営,運営,管理","名詞","R","","2.2"],["designer","デザイナー、設計者","名詞","R","","2.2"],["go into doing","･･･するために費やされる","熟語","R","","2.2"],["absolutely","(全く) そのとおり","副詞","R","","2.3"],["traditional","伝統的な、昔ながらの","形容詞","S","","2.3"],["require","･･･を必要とする","動詞","N","","2.3"],["discipline","訓練,規律","名詞","R","","2.3"],["collaboration","協力,共同制作","名詞","S","","2.3"],["strategy","戦略、戦術","名詞","R","","2.3"],["defeat","･･･を打ち負かす","動詞","N","","2.3"],["viewership","視聴者数","名詞","R","","2.3"],["component","部分","名詞","R","","2.3"],["characteristic","特徴","名詞","S","","2.3"],["be regarded as ...","･･･とみなされる","熟語","S","","2.3"]],[["editorial","(新聞などの) 社説","名詞","R","","3.1"],["climate","気候","名詞","N","","3.1"],["extreme","極端な","形容詞","N","","3.1"],["drought","干ばつ","名詞","N","","3.1"],["mass","大量の、大規模な","形容詞","N","","3.1"],["catastrophe","大災害","名詞","S","","3.1"],["helpless","無力な、どうすることもできない","形容詞","R","","3.1"],["diet","(日常的な) 食べ物、常食","名詞","N","","3.1"],["total","全体の、全部の、総計の","形容詞","N","","3.1"],["greenhouse gas","温室効果ガス","名詞","S","","3.1"],["emission","排出","名詞","R","","3.1"],["transportation","交通機関","名詞","S","","3.1"],["combined","合計の、合算した","形容詞","R","","3.1"],["carbon","炭素","名詞","N","","3.1"],["dramatically","劇的に","副詞","S","","3.1"],["according to~","〜によれば","熟語","R","","3.1"],["account for~","〜を占める、~を構成する","熟語","R","","3.1"],["animal welfare","動物福祉","名詞","S","","3.2"],["behind~","~の背後に、~の後ろの","前置詞","N","","3.2"],["tiny","とても小さな","形容詞","N","","3.2"],["room","余地","名詞","N","","3.2"],["overcrowding","過密(状態)","名詞","S","","3.2"],["factory-farmed","工場方式で飼育された","形容詞","S","","3.2"],["dose","(1回分の)服用量","名詞","N","","3.2"],["antibiotic","抗生物質","名詞","R","通例複数形 antibioticsで","3.2"],["antibiotic-resistant","耐抗生物質の","形容詞","S","","3.2"],["bacteria","バクテリア、細菌","名詞","R","","3.2"],["infection","感染(症)","名詞","R","","3.2,4.1"],["consumption","消費 [摂取] 量","名詞","S","","3.3"],["affect","~に影響を与える","動詞","N","","3.3"],["illness","病気","名詞","N","","3.3"],["cancer","癌","名詞","N","","3.3"],["consume","~を消費 [摂取] する","動詞","N","","3.3"],["processed","加工された","形容詞","R","","3.3"],["given~","~を考慮すれば","熟語","R","","3.3"],["as a whole","全体として","熟語","R","","3.3"],["switch to~","~へ切り替える、転換する","熟語","R","","3.3"],["central","中心の","形容詞","N","","3.4"],["altogether","完全に","副詞","R","","3.4"],["misguided","見当違いの","形容詞","R","","3.4"],["livestock","家畜(類)","名詞","R","","3.4"],["contribute","(･･･の)一因となる","動詞","R","","3.4"],["completely","完全に","副詞","R","","3.4"],["agriculture","農業","名詞","S","","3.4"],["intensively","集中的に","副詞","S","","3.4"],["fertilizer","肥料","名詞","R","","3.4"],["agricultural","農業の","形容詞","S","","3.4"],["irrigation","灌漑","名詞","R","","3.4"],["take issue with~","〜に異議を唱える、~に反対する","熟語","S","","3.4"],["be true of~","〜にも当てはまる","熟語","R","","3.4"],["in short","要するに、手短に言えば","熟語","R","","3.4"],["explosion","爆発的増加","名詞","R","","3.5"],["organic","有機栽培 [肥料] による","形容詞","N","","3.5"],["free-range","放し飼いの","形容詞","R","","3.5"],["obviously","明らかに","副詞","R","","3.5"],["non-intensive","非集約的な","形容詞","S","","3.5"],["neither","･･･もまた〜しない","副詞","N","","3.5"],["evolve","進化する","動詞","N","","3.5"],["omnivore","雑食(性)動物","名詞","R","","3.5"],["nutrition","栄養(になるもの)","名詞","R","","3.5"],["flexitarian","フレキシタリアン (柔軟な菜食主義者) ／ フレキタリアンの","名詞/形容詞","S","","3.5"],["realistic","現実的な、実際的な","形容詞","R","","3.5"],["vegetarianism","菜食主義","名詞","S","","3.5"],["overall","全体の","形容詞","N","","3.5"],["promote","~を促進する","動詞","N","","3.5"],["long-term","長期にわたる","形容詞","R","","3.5"],["refer to~","〜に言及する","熟語","R","","3.5"]],[["founding father","創始者","名詞","S","","4.1"],["Scottish","スコットランド(人)の","形容詞","R","","4.1"],["discovery","発見","名詞","R","","4.1"],["penicillin","ペニシリン (抗生物質の一種)","名詞","R","","4.1"],["revolutionize","･･･に革命をもたらす","動詞","S","","4.1"],["cure","･･･を治療する","動詞","N","","4.1"],["infect","･･･を感染させる","動詞","N","","4.1"],["large-scale","大規模な","形容詞","S","","4.1"],["humble","身分が低い、恵まれない","形容詞","N","humble beginnings=庶民の出、恵まれない生い立ち","4.1"],["desire","願望","名詞","N","","4.1"],["wound","傷 ／ ~を負傷させる","名詞/動詞","N","","4.1,4.3"],["injury","負傷","名詞","N","","4.1"],["by accident","偶然に","熟語","R","","4.1"],["break out","起こる、勃発する、発生する","熟語","R","","4.1"],["not~but...","〜ではなく･･･","熟語","R","","4.1"],["accidental","偶然の","形容詞","R","","4.2"],["lucky break","けがの功名","熟語","R","","4.2"],["laboratory","研究所","名詞","R","","4.2"],["Petri dish","ペトリ皿、シャーレ","名詞","R","","4.2"],["cultivate","･･･を培養する","動詞","R","","4.2"],["contaminated","汚染された","形容詞","S","","4.2"],["mold","かび","名詞","N","","4.2"],["penicillium notatum","ペニシリウム・ノタツム (アオカビ)","名詞","S","","4.2"],["obtain","･･･を得る","動詞","N","","4.2"],["bacteria-killing","バクテリア [細菌] を殺す","形容詞","S","","4.2"],["ingredient","材料、成分、要素","名詞","R","","4.2"],["convince","~を納得させる、確信させる","動詞","R","be convinced (that)~=~と確信している","4.2"],["skin","皮膚","名詞","N","","4.2"],["pneumonia","肺炎","名詞","R","","4.2"],["deadly","致命的な","形容詞","N","","4.2"],["respiratory","呼吸(器)の","形容詞","S","","4.2"],["available","利用できる、入手できる","形容詞","R","","4.2"],["retirement","退職","名詞","R","","4.3"],["achievement","功績","名詞","S","","4.3"],["substance","物質","名詞","R","","4.3"],["microorganism","微生物","名詞","S","","4.3"],["antibiosis","抗生作用","名詞","R","","4.3"],["bacterial","バクテリア [細菌] の","形容詞","R","","4.3"],["multiply","増殖する","動詞","R","","4.3"],["Egyptian","エジプト人","名詞","R","","4.3"],["moldy","かびの生えた","形容詞","N","","4.3"],["in time","間に合うように","熟語","R","in time for~=~ に間に合うように","4.3"]],[["rise","台頭、興隆、隆盛","名詞","N","on the rise･･･増加中で、上昇中で","5.1"],["exhausted","疲れ果てた","形容詞","R","","5.1"],["stress","(精神的)緊張、ストレス","名詞","N","","5.1"],["increasingly","ますます","副詞","S","","5.1"],["trend","傾向、動向","名詞","N","","5.1"],["encourage","~を励ます、勇気づける","動詞","R","encourage O to do~･･･ を~するよう励ます、奨励する","5.1"],["maturity","(身体・精神の) 成熟","名詞","R","","5.1"],["despite","~にも関わらず (=in","前置詞","N","spite of~)","5.1"],["catch on","流行する","熟語","R","","5.1"],["expectation","期待、予期、見込み","名詞","S","","5.2"],["applicant","志願者,応募者","名詞","R","","5.2"],["likewise","同様に","副詞","R","","5.2"],["abound","たくさんある、豊富である","動詞","N","","5.2"],["noticeably","際立って","副詞","R","","5.2"],["elite","えり抜きの、エリートの","形容詞","N","the elite･･･エリート","5.2"],["youngster","若者","名詞","R","","5.2"],["sun","~を日光に当てる","動詞","N","sun oneself･･･ 日なたぼっこをする","5.2"],["champion","擁護者","名詞","R","","5.2"],["renewed","新たな、よみがえった","形容詞","N","","5.2"],["refreshment","元気回復、気分爽快","名詞","S","","5.2"],["demotivate","･･･のやる気をなくさせる","動詞","R","","5.2"],["full-time","フルタイムで","副詞","R","","5.2"],["broaden","~を広くする、広げる","動詞","N","","5.2"],["horizon","地平線、[通例~s] 視野、範囲","名詞","N","broaden one's horizons･･･~の視野を広げる","5.2"],["step-up","増加,向上","名詞","N","","5.2"],["build... into ~","･･･を〜に組み込む","熟語","S","","5.2"],["settle into~","〜に慣れる","熟語","R","","5.2"],["pay one's way","経済的に自立する","熟語","R","","5.2"],["bring~down","〜をがっかりさせる、落ち込ませる","熟語","R","","5.2"],["a new lease on life","復活、再出発、新たな人生","熟語","S","","5.2"],["go on to say","続けて･･･と言う","熟語","R","","5.2"],["burn-out","(心身の) 極度の疲労、燃え尽き","名詞","R","","5.3"],["luxury","ぜいたく","名詞","N","","5.3"],["afford","･･･を持つ (買う) 余裕がある","動詞","N","","5.3"],["remote","人里離れた、へんぴな、遠い","形容詞","N","","5.3"],["isolation","孤独感","名詞","R","","5.3"],["struggle","(･･･しようと) 努力する、もがく","動詞","R","","5.3"],["afterward","後で","副詞","R","","5.3"],["push","~に強いる","動詞","N","push O to do~･･･ に~するよう強いる","5.3"],["end up~ing","結局は〜することになる","熟語","R","","5.3"],["get to 人","人の心に影響を及ぼす、人をいらいらさせる","熟語","R","","5.3"],["not all it's cracked up to be","評判ほどではない","熟語","S","","5.3"],["take into account ...","･･･を考慮する","熟語","S","","5.3"],["take up...","･･･を取り入れる","熟語","R","","5.3"]]];
+const UNITS=UR.map((l,i)=>({u:i+1,list:l.map(([w,m,p,r,n,s])=>({w,m,p,r,n,s,u:i+1}))}));
+const START=()=>UNITS[0].list.map(x=>({w:x.w,m:x.m,p:x.p,n:x.n,u:1,box:1}));
+const nk=w=>String(w).toLowerCase().replace(/[~\s]+$/,"");
+const UNITW=new Map(UNITS.flatMap(U=>U.list).map(x=>[nk(x.w),x]));
+const mkWord=(w,m)=>{const U=UNITW.get(nk(w));return{w,m,p:U?U.p:"",n:U?U.n:"",u:U?U.u:0,g:U?undefined:nextG(),box:1}};
+const GN="vocab_gnames_v1";
+let gnames=(()=>{try{const g=JSON.parse(localStorage.getItem(GN));if(g&&typeof g==="object")return g}catch(e){}return{}})(),openG=null;
+const gnm=g=>gnames[g]||`取り込み単語 ${g+1}`;
+function saveGn(){try{localStorage.setItem(GN,JSON.stringify(gnames))}catch(e){}}
+function nextG(){const c=words.filter(x=>!x.u&&x.g!==undefined);if(!c.length)return 0;const mx=Math.max(...c.map(x=>x.g));return c.filter(x=>x.g===mx).length>=100?mx+1:mx}
+let words=load(),tab="study",cur=null,flip=false,quiz=null,score={c:0,t:0},gain="",cands=[],scanMsg="",scanLvl="all";
+words.filter(x=>!x.u&&x.g===undefined).forEach(x=>{x.g=nextG()});
+const PK="vocab_profile_v1";
+let prof=(()=>{try{const p=JSON.parse(localStorage.getItem(PK));if(p&&typeof p.xp==="number")return p}catch(e){}return{xp:0,coins:0,combo:0}})();
+function saveProf(){try{localStorage.setItem(PK,JSON.stringify(prof))}catch(e){}}
+const lvOf=x=>Math.floor(Math.sqrt(x/40))+1;
+const U=id=>(prof.up&&prof.up[id])||0;
+const GK="vocab_gacha_v2",REF={N:3,R:8,S:20};
+const POOL=UNITS.slice(1).flatMap(U=>U.list);
+let gcat=2;
+const gpool=()=>gcat==="pre"?POOL.filter(p=>p.r!=="N"):POOL.filter(p=>p.u===gcat);
+const RT={coin:1.12,xp:1.12,combo:1.2,lvb:1.15,disc:.96},mu=id=>Math.pow(RT[id],U(id)),pc=(id,l)=>Math.round((Math.pow(RT[id],l)-1)*100);
+const costOf=n=>Math.max(1,Math.round((gcat==="pre"?(n===1?80:720):(n===1?20:180))*mu("disc")));
+const gname=()=>gcat==="pre"?"プレミアム":"Unit "+gcat;
+let gz=(()=>{try{const g=JSON.parse(localStorage.getItem(GK));if(g&&Array.isArray(g.owned))return g}catch(e){}return{owned:[],pulls:0}})(),pulled=[],dexMsg="";
+let sfxOn=(()=>{try{return localStorage.getItem("vocab_sfx")!=="0"}catch(e){return true}})(),AC=null;
+function tone(f,t,d,type="sine",v=.15){
+  if(!sfxOn)return;
+  try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume();
+    const o=AC.createOscillator(),g=AC.createGain(),s=AC.currentTime+t;
+    o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);
+    o.connect(g);g.connect(AC.destination);o.start(s);o.stop(s+d)}catch(e){}
+}
+const SFX={
+  ok:()=>{tone(660,0,.12);tone(880,.1,.2)},
+  ng:()=>{tone(220,0,.18,"sawtooth",.08);tone(165,.15,.25,"sawtooth",.08)},
+  flip:()=>tone(500,0,.07,"triangle",.1),
+  up:()=>[523,659,784,1047].forEach((f,i)=>tone(f,i*.1,.3,"triangle")),
+  N:()=>tone(440,0,.15),
+  R:()=>{tone(523,0,.12);tone(784,.1,.25)},
+  S:()=>[523,659,784,1047,1319].forEach((f,i)=>tone(f,i*.09,.4,"triangle",.18))
+};
+function sfx(n){SFX[n]&&SFX[n]()}
+function toggleSfx(){sfxOn=!sfxOn;try{localStorage.setItem("vocab_sfx",sfxOn?"1":"0")}catch(e){}sfx("flip");hud()}
+function showTitle(){
+  const L=lvOf(prof.xp),t=$("ttl");t.style.display="flex";
+  t.innerHTML=`<h2>楽単シート</h2><div class="sub">for web ─ 楽しく続ける英単語学習</div><div class="tstat">Lv ${L}　🪙 ${prof.coins}　単語 ${words.length}語</div><button class="btn pri" onclick="startApp()">${prof.xp||gz.pulls?"つづきから":"はじめる"}</button>`;
+}
+function startApp(){sfx("ok");$("ttl").style.display="none"}
+function saveGz(){try{localStorage.setItem(GK,JSON.stringify(gz))}catch(e){}}
+function pullOne(fs){
+  const x=Math.random(),pr=gcat==="pre",r=fs?"S":pr?(x<.3?"S":"R"):x<.05?"S":x<.30?"R":"N",has=p=>gz.owned.includes(p.w);
+  const cp=gpool(),tier=cp.filter(p=>p.r===r);
+  let c=tier.filter(p=>!has(p));
+  if(!c.length)c=cp.filter(p=>!has(p));
+  if(!c.length)c=tier.length?tier:cp;
+  const p=c[Math.floor(Math.random()*c.length)],isNew=!has(p);
+  if(isNew){gz.owned.push(p.w);if(!words.some(y=>y.w.toLowerCase()===p.w))words.push({w:p.w,m:p.m,p:p.p,n:p.n,u:p.u,box:1})}else prof.coins+=REF[p.r];
+  return{...p,isNew};
+}
+function draw(n){
+  const cost=costOf(n);if(prof.coins<cost)return;
+  prof.coins-=cost;pulled=[];dexMsg="";
+  for(let i=0;i<n;i++)pulled.push(pullOne(gcat==="pre"&&n===10&&i===9&&!pulled.some(q=>q.r==="S")));
+  gz.pulls+=n;sfx(pulled.some(p=>p.r==="S")?"S":pulled.some(p=>p.r==="R")?"R":"N");
+  gz.cd=gz.cd||{};if(gpool().every(p=>gz.owned.includes(p.w))&&!gz.cd[gcat]){gz.cd[gcat]=1;const bn=gcat==="pre"?300:100;prof.coins+=bn;dexMsg="「"+gname()+"」コンプリート！ボーナス 🪙"+bn}
+  save();saveGz();saveProf();hud();rShop();
+}
+function hud(){const L=lvOf(prof.xp),a=40*(L-1)**2,b=40*L*L;
+  $("hud").innerHTML=`<span class="lv">Lv ${L}</span><div class="xp"><div class="t"><i style="width:${(prof.xp-a)/(b-a)*100}%"></i></div><small>${prof.xp-a} / ${b-a} XP</small></div><span>🪙 ${prof.coins}</span><button class="del" style="color:var(--text);font-size:13px" onclick="toggleSfx()" aria-label="効果音の切り替え">${sfxOn?"音ON":"音OFF"}</button>`}
+function load(){try{const s=localStorage.getItem(K);if(s){const a=JSON.parse(s);if(Array.isArray(a)&&a.length)return a}}catch(e){}return START()}
+function save(){try{localStorage.setItem(K,JSON.stringify(words))}catch(e){}sbInfo()}
+function sbInfo(){const e=$("sbf");if(e){const m=words.filter(x=>!x.off).length;e.textContent="出題中 "+m+" / "+words.length+"語"}}
+function toggleSb(){$("sb").classList.toggle("open");$("ov").classList.toggle("open")}
+function closeSb(){$("sb").classList.remove("open");$("ov").classList.remove("open")}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSb()});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=id=>document.getElementById(id);
+function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang="en-US";speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function pick(excl){ // 低いボックスほど出やすい
+  const all=words.map((x,i)=>({i,wt:6-x.box})).filter(o=>!words[o.i].off);
+  if(!all.length)return -1;
+  const pl=all.filter(o=>o.i!==excl),pool=pl.length?pl:all;
+  let r=Math.random()*pool.reduce((a,o)=>a+o.wt,0);
+  for(const o of pool){r-=o.wt;if(r<=0)return o.i}
+  return pool[0].i;
+}
+function grade(i,ok){words[i].box=ok?Math.min(5,words[i].box+1):1;save()}
+function setTab(t){tab=t;cur=null;quiz=null;pulled=[];dexMsg="";closeSb();window.scrollTo(0,0);render()}
+function render(){hud();
+  $("nav").innerHTML=[["study","学習"],["quiz","クイズ"],["list","単語帳"],["scan","取り込み"],["shop","ショップ"],["stats","進捗"]]
+    .map(([k,l])=>`<button class="${tab===k?"on":""}" onclick="setTab('${k}')">${l}</button>`).join("");
+  sbInfo();
+  ({study:rStudy,quiz:rQuiz,list:rList,scan:rScan,shop:rShop,stats:rStats})[tab]();
+}
+function rStudy(){
+  if(cur===null){cur=pick(-1);flip=false}
+  if(cur<0){rEmpty();return}
+  const x=words[cur];
+  $("app").innerHTML=`<div class="card fc" onclick="flip=!flip;sfx('flip');rStudy()">
+    ${flip?`<div class="m">${esc(x.m)}</div>${x.n?`<div class="hint">${esc(x.n)}</div>`:""}`:`<div class="w">${esc(x.w)}</div><div class="box">${esc(x.p||"")}</div><div class="hint">タップして意味を表示</div>`}
+    <div class="box" style="margin-top:14px">レベル ${x.box}/5</div></div>
+    <div class="row"><button class="btn" onclick="speak(words[cur].w)">発音</button></div>
+    <div class="row"><button class="btn ng" onclick="ans(false)">まだ</button><button class="btn ok" onclick="ans(true)">覚えた</button></div>`;
+}
+function rEmpty(){$("app").innerHTML=`<div class="card">出題範囲の単語がすべてOFFになっています。単語帳でスイッチをONにしてください。<div class="row"><button class="btn pri" onclick="setTab('list')">単語帳を開く</button></div></div>`}
+function ans(ok){sfx(ok?"ok":"flip");grade(cur,ok);cur=pick(cur);flip=false;rStudy()}
+let qmode="en2ja";
+function setQ(m){qmode=m;quiz=null;rQuiz()}
+function rQuiz(){
+  if(words.length<4){$("app").innerHTML=`<div class="card">クイズには4語以上が必要です。単語帳から追加してください。</div>`;return}
+  if(pick(-1)<0){rEmpty();return}
+  if(!quiz){
+    const i=pick(-1);
+    const sh=words.map((_,k)=>k).filter(k=>k!==i&&words[k].m!==words[i].m&&words[k].w!==words[i].w).sort(()=>Math.random()-.5),same=sh.filter(k=>words[k].p&&words[k].p===words[i].p),others=[...same,...sh.filter(k=>!same.includes(k))].slice(0,3);
+    quiz={i,opts:[i,...others].sort(()=>Math.random()-.5),sel:null};
+  }
+  const x=words[quiz.i],ja=qmode==="ja2en";
+  $("app").innerHTML=`<div class="card"><div class="chips" style="margin:0 0 10px"><button class="chip ${ja?"":"on"}" onclick="setQ('en2ja')">英語→意味</button><button class="chip ${ja?"on":""}" onclick="setQ('ja2en')">意味→英語</button></div><div class="box">正解 ${score.c} / ${score.t}　🔥コンボ ${prof.combo}</div>
+    <div class="q" ${ja?'style="font-size:24px"':""}>${esc(ja?x.m:x.w)}</div><div class="box" style="text-align:center">${esc(x.p||"")}</div><div class="hint" style="text-align:center;margin-top:2px">出典：${esc(srcOf(x))}</div><div class="row"><button class="btn" ${ja&&quiz.sel===null?"disabled":""} onclick="speak(words[quiz.i].w)">発音</button><button class="btn" ${quiz.sel!==null||prof.coins<10||quiz.hid?"disabled":""} onclick="useHint()">ヒント 🪙10</button></div>
+    <div class="opts">${quiz.opts.filter(k=>!(quiz.hid||[]).includes(k)).map(k=>{
+      let c="";if(quiz.sel!==null){if(k===quiz.i)c="right";else if(k===quiz.sel)c="wrong"}
+      return `<button class="btn opt ${c}" ${quiz.sel!==null?"disabled":""} onclick="choose(${k})">${esc(ja?words[k].w:words[k].m)}</button>`}).join("")}</div>
+    ${quiz.sel!==null?`<div class="toast">${gain}</div><div class="row"><button class="btn pri" onclick="quiz=null;rQuiz()">次の問題 →</button></div>`:""}</div>`;
+}
+function choose(k){
+  if(quiz.sel!==null)return;
+  quiz.sel=k;const ok=k===quiz.i;score.t++;grade(quiz.i,ok);
+  if(ok){score.c++;prof.combo++;const bonus=prof.combo%5===0,xp=Math.round((10+Math.min(prof.combo-1,5)*2*mu("combo"))*mu("xp")),co=Math.round((5+(bonus?10:0))*mu("coin")),L0=lvOf(prof.xp);
+    prof.xp+=xp;prof.coins+=co;sfx("ok");gain=`+${xp} XP　+🪙${co}`+(bonus?"　🔥5コンボボーナス!":"");
+    if(lvOf(prof.xp)>L0){const lb=Math.round(50*mu("lvb"));prof.coins+=lb;setTimeout(()=>sfx("up"),250);gain+=`　レベルアップ! Lv${lvOf(prof.xp)}(+🪙${lb})`}}
+  else{prof.combo=0;sfx("ng");gain="残念… コンボがリセットされました"}
+  saveProf();hud();rQuiz();
+}
+function useHint(){if(!quiz||quiz.sel!==null||quiz.hid||prof.coins<10)return;prof.coins-=10;quiz.hid=quiz.opts.filter(k=>k!==quiz.i).slice(0,2);saveProf();hud();rQuiz()}
+let ptText="",ptMin=4;
+const STOP=new Set("about above after again all also been before being below between both because could does doing down during each from further have having here hers himself into itself just more most myself only other ours ourselves over same should some such than that their theirs them themselves then there these they this those through under until very were what when where which while whom will with would your yours yourself yourselves said says getting goes going went make made like first good great well back much many even still take took come came know known want used find work way thing things people time year years day days little long right left high small large next early young important able ever never always often really must might shall upon yet however although though".split(" "));
+const RE_EJ=/^([A-Za-z][A-Za-z'~.\- ]*?)\s*(?:[|｜:：=＝\-–—→\/・]\s*)?(?:(?:名詞|動詞|形容詞|副詞|前置詞|熟語|名|動|形|副|前|フレ)(?:\s*[|｜:：.．]\s*|\s+))?([（(\u3040-\u30ff\u3400-\u9fff〜~･「].*)$/;
+const RE_JE=/^([\u3040-\u30ff\u3400-\u9fff（(][^A-Za-z]*?)\s*[|｜:：=＝\-–—→\/]?\s*([A-Za-z][A-Za-z'~.\- ]*)$/;
+const hasJa=s=>/[\u3040-\u30ff\u3400-\u9fff]/.test(s);
+function parsePairs(text){
+  const pairs=[],rest=[];
+  text.replace(/[’‘]/g,"'").split(/\r?\n/).forEach(raw=>{
+    const line=raw.replace(/^\s*(?:[-*•・●○▪]|\d+[.)．、])\s*/,"").trim();
+    if(!line)return;
+    let en=null,ja=null,m=line.match(RE_EJ);
+    if(m&&hasJa(m[2])){en=m[1];ja=m[2]}
+    else{m=line.match(RE_JE);if(m&&hasJa(m[1])){en=m[2];ja=m[1]}}
+    en=en&&en.trim().toLowerCase().replace(/[~.\s-]+$/,"");
+    if(en&&en.length>1&&en.split(/\s+/).length<=4&&/^[a-z][a-z'~ -]*$/.test(en)){
+      pairs.push([en,ja.split("※")[0].trim().replace(/^[（(](.*)[）)]$/,"$1").slice(0,60)]);
+    }else rest.push(line);
+  });
+  return{pairs,rest:rest.join("\n")};
+}
+function extractText(){
+  const{pairs,rest}=parsePairs(ptText),have=new Set(words.map(x=>nk(x.w))),pm=new Map(),cnt=new Map();
+  pairs.forEach(([w,m])=>{if(m&&!pm.has(w))pm.set(w,m)});
+  (rest.toLowerCase().replace(/[’‘]/g,"'").match(/[a-z]+(?:'[a-z]+)?/g)||[]).forEach(w=>{
+    w=w.replace(/'s$/,"");
+    if(w.length<ptMin||STOP.has(w))return;
+    cnt.set(w,(cnt.get(w)||0)+1);
+  });
+  for(const [w,n] of [...cnt]){if(w.endsWith("s")&&cnt.has(w.slice(0,-1))){cnt.set(w.slice(0,-1),cnt.get(w.slice(0,-1))+n);cnt.delete(w)}}
+  const mk=(w,m,n,pair)=>{const U=UNITW.get(nk(w))||UNITW.get(nk(w).replace(/s$/,""));return{w,m,n,pair,on:!U,unit:U?U.u:0}};
+  const a=[...pm].filter(([w])=>!have.has(nk(w))).map(([w,m])=>mk(w,m,1,true));
+  const b=[...cnt].filter(([w])=>!have.has(w)&&!have.has(w.replace(/s$/,""))&&!pm.has(w)).sort((x,y)=>y[1]-x[1]||y[0].length-x[0].length).slice(0,50).map(([w,n])=>mk(w,"",n,false));
+  cands=[...a,...b];
+  const lk=cands.filter(c=>c.unit).length;
+  scanMsg=!ptText.trim()?"英文を貼り付けてください。":cands.length?`${cands.length}語を抽出しました（日本語訳つき ${a.length}語、登録済みの単語は除外）。`+(lk?`[Unit]表示のついた${lk}語はUnitの未開放語なので、ガチャで開放できるよう最初は未選択です。`:"")+"意味が空の単語は、意味を入力すると追加できます（空のままだと追加されません）。":"追加できる新しい単語が見つかりませんでした。";
+  rScan();
+}
+function rScan(){
+  $("app").innerHTML=`<div class="card"><b>テキストから単語を追加</b>
+    <div class="hint">① 画像の英文をコピー：iPhoneは写真アプリで文字を長押し→「すべてを選択」→コピー。AndroidはGoogleレンズの「テキスト」→コピー。<br>② 下に貼り付けて「単語を抽出」。抽出は端末内で行うので無料です。<br>英単語のすぐ隣に日本語訳がある場合（例: <b>settler 入植者</b> ／ <b>settler | 名 | 入植者</b> ／ <b>入植者 settler</b>）は、その訳も一緒に読み取ります。<br>追加した単語は100語ごとにグループ分けされ、単語帳で名前を変更できます。</div>
+    <textarea id="pt" rows="6" placeholder="ここに英文を貼り付け" oninput="ptText=this.value">${esc(ptText)}</textarea>
+    <select onchange="ptMin=+this.value"><option value="4" ${ptMin===4?"selected":""}>標準（4文字以上）</option><option value="7" ${ptMin===7?"selected":""}>難しめの単語のみ（7文字以上）</option></select>
+    <div class="row"><button class="btn pri" onclick="extractText()">単語を抽出</button></div>
+    <div class="hint">${esc(scanMsg)}</div>
+    ${cands.length?`<div class="row"><button class="btn" onclick="cands.forEach(c=>c.on=true);rScan()">全選択</button><button class="btn" onclick="cands.forEach(c=>c.on=false);rScan()">全解除</button></div>
+    <ul>${cands.map((c,i)=>`<li><input type="checkbox" style="width:auto;margin:0" ${c.on?"checked":""} onchange="cands[${i}].on=this.checked;rScan()"><div><input value="${esc(c.w)}" oninput="cands[${i}].w=this.value" style="margin:0 0 4px;font-weight:700"><input value="${esc(c.m)}" placeholder="意味を入力" oninput="cands[${i}].m=this.value" style="margin:0"></div><span class="box" style="text-align:right">${c.unit?"[Unit"+c.unit+"] ":""}${c.pair?"訳あり":"×"+c.n}</span></li>`).join("")}</ul>
+    <div class="row"><button class="btn pri" onclick="addCands()">選択した単語を追加</button></div>`:""}</div>`;
+}
+function addCands(){
+  const seen=new Set(words.map(x=>x.w.toLowerCase()));let k=0,skip=0;
+  cands.filter(c=>c.on).forEach(c=>{const w=c.w.trim(),m=c.m.trim();if(!w||seen.has(w.toLowerCase()))return;if(!m){skip++;return}seen.add(w.toLowerCase());words.push(mkWord(w,m));k++});
+  save();cands=cands.filter(c=>c.on&&!c.m.trim());
+  scanMsg=`${k}語を単語帳に追加しました。`+(skip?`意味が未入力の${skip}語は残してあります。`:"");
+  if(k)sfx("ok");rScan();
+}
+const SHOP=[
+ {id:"coin",n:"コイン獲得量アップ",d:"クイズ正解で得るコインが、1レベルごとに12%ずつ(複利で)増える",max:10,base:100,fx:l=>"獲得コイン +"+pc("coin",l)+"%"},
+ {id:"xp",n:"経験値獲得量アップ",d:"クイズ正解で得るXPが、1レベルごとに12%ずつ(複利で)増える",max:10,base:80,fx:l=>"獲得XP +"+pc("xp",l)+"%"},
+ {id:"combo",n:"コンボ強化",d:"連続正解で上乗せされるボーナスXPが、1レベルごとに20%ずつ(複利で)増える",max:10,base:120,fx:l=>"コンボボーナス +"+pc("combo",l)+"%"},
+ {id:"disc",n:"ガチャ割引",d:"ガチャの費用が、1レベルごとに4%ずつ(複利で)安くなる",max:10,base:150,fx:l=>"費用 -"+Math.round((1-Math.pow(RT.disc,l))*100)+"%"},
+ {id:"lvb",n:"レベルアップ報酬強化",d:"レベルアップ時にもらえるコインが、1レベルごとに15%ずつ(複利で)増える",max:10,base:100,fx:l=>"報酬 +"+pc("lvb",l)+"%"}
+];
+const upCost=s=>Math.round(s.base*Math.pow(1.4,U(s.id))/10)*10;
+function buy(id){
+  const s=SHOP.find(x=>x.id===id),lv=U(id),c=upCost(s);
+  if(lv>=s.max||prof.coins<c)return;
+  prof.coins-=c;prof.up=prof.up||{};prof.up[id]=lv+1;saveProf();hud();sfx("up");rShop();
+}
+let shopTab="gacha";
+function rShop(){
+  $("app").innerHTML=`<div class="chips" style="margin:0 0 12px"><button class="chip ${shopTab==="gacha"?"on":""}" onclick="shopTab='gacha';rShop()">ガチャ</button><button class="chip ${shopTab==="up"?"on":""}" onclick="shopTab='up';rShop()">ステータス強化</button></div><div id="shopbody"></div>`;
+  if(shopTab==="gacha")rDex();else rUp();
+}
+function rUp(){
+  $("shopbody").innerHTML=`<div class="card"><b>ステータス強化</b>
+    <div class="hint">コインでステータスを強化できます。強化はクイズの報酬やガチャの費用に自動で反映されます。所持: 🪙${prof.coins}</div>
+    ${SHOP.map(s=>{const lv=U(s.id),c=upCost(s),mx=lv>=s.max;return`<div class="shop"><div class="si"><b>${s.n}</b> <span class="box">Lv ${lv} / ${s.max}</span><div class="hint" style="margin-top:2px">${s.d}</div><div class="box">現在: ${lv?s.fx(lv):"なし"}${mx?"":"　→　次: "+s.fx(lv+1)}</div></div><button class="btn pri" style="flex:none;min-width:96px" ${mx||prof.coins<c?"disabled":""} onclick="buy('${s.id}')">${mx?"最大":"🪙"+c}</button></div>`}).join("")}</div>`;
+}
+function unitCount(u){const l=POOL.filter(p=>p.u===u);return[l.filter(p=>gz.owned.includes(p.w)).length,l.length]}
+function rDex(){
+  const RN={N:"N",R:"R",S:"SR"},pre=gcat==="pre",cp=gpool(),n=cp.filter(p=>gz.owned.includes(p.w)).length,c1=costOf(1),c10=costOf(10);
+  $("shopbody").innerHTML=`<div class="card"><b>単語ガチャ</b>
+    <div class="chips">${UNITS.slice(1).map(U=>{const[a,b]=unitCount(U.u);return`<button class="chip ${U.u===gcat?"on":""}" onclick="gcat=${U.u};pulled=[];dexMsg='';rShop()">Unit ${U.u} <small>${a}/${b}</small></button>`}).join("")}<button class="chip pre ${pre?"on":""}" onclick="gcat='pre';pulled=[];dexMsg='';rShop()">プレミアム</button></div>
+    <div class="hint">${pre?"プレミアムガチャ（全ユニット横断）":"ENRICH II Unit "+gcat+" ガチャ"} ─ 開放済み ${n} / ${cp.length}語。未開放の単語が出やすく、開放した単語は学習・クイズの対象に加わります（Unit 1は最初から開放済み）。${pre?"排出率 R 70% / SR 30%、10連はSR1語以上確定。":"排出率 N 70% / R 25% / SR 5%。"}全て開放した後の重複はコインに還元されます。<br>レア度：N＝7文字以下の単語／R＝熟語・8〜10文字／SR＝11文字以上の難語・長い熟語</div>
+    <div class="row"><button class="btn pri" ${prof.coins<c1?"disabled":""} onclick="draw(1)">1回 🪙${c1}</button><button class="btn pri" ${prof.coins<c10?"disabled":""} onclick="draw(10)">10連 🪙${c10}</button></div>
+    ${dexMsg?`<div class="toast">${dexMsg}</div>`:""}
+    ${pulled.length?`<div class="res">${pulled.map(p=>`<div class="g ${p.r}"><b>${esc(p.w)}</b><span>${esc(p.m)}</span><i>${RN[p.r]} ${p.isNew?"NEW":"重複 +🪙"+REF[p.r]}</i></div>`).join("")}</div>`:""}</div>`;
+}
+function sumCard(){
+  const c=l=>words.filter(x=>l.includes(x.box)).length,have=new Set(words.map(x=>x.w.toLowerCase()));
+  const t=[["総単語数",words.length],["習得済み (Lv5)",c([5])],["学習中 (Lv2〜4)",c([2,3,4])],["未学習 (Lv1)",c([1])],["ガチャ開放",gz.owned.length+" / "+POOL.length],["習得率",(words.length?Math.round(c([5])/words.length*100):0)+"%"]];
+  const bars=UNITS.map(U=>{const a=U.list.filter(x=>have.has(x.w.toLowerCase())).length,b=U.list.length;return`<div class="bar"><span class="l">Unit ${U.u}</span><span class="t"><i style="width:${a/b*100}%"></i></span><span>${a}/${b}</span></div>`}).join("");
+  return `<div class="card"><b>単語帳サマリー</b><div class="stile">${t.map(([l,v])=>`<div><b>${v}</b><span>${l}</span></div>`).join("")}</div><div style="margin-top:14px"><b>ユニット別の開放状況</b>${bars}<div class="bar"><span class="l">ユニット外</span><span style="flex:1"></span><span>${words.filter(x=>!x.u).length}語</span></div></div></div>`;
+}
+function srcOf(x){
+  const e=UNITW.get(nk(x.w));
+  if(!e||!e.s)return"ユニット外（"+(x.g!==undefined?gnm(x.g):"自分で追加した単語")+"）";
+  const g={};e.s.split(",").forEach(t=>{const[u,p]=t.split(".");(g[u]=g[u]||[]).push(p)});
+  return Object.entries(g).map(([u,ps])=>`ENRICH II Unit ${u} ／ Reading 1 学習ノート Part ${ps.join("・")}`).join("　＋　");
+}
+function renameG(g){const v=$("gn"+g).value.trim().slice(0,30);if(v)gnames[g]=v;else delete gnames[g];saveGn();openG=g;rList()}
+let og={},GS=[];
+function groups(){
+  const row=(x,i)=>`<li class="${x.off?"off":""}"><label class="sw" aria-label="出題のON/OFF"><input type="checkbox" ${x.off?"":"checked"} onchange="togW(${i},this.checked)"><i></i></label><div><b>${esc(x.w)}</b><span>${esc(x.m)}</span></div><span class="box">Lv${x.box}</span><button class="del" onclick="delWord(${i})" aria-label="削除">削除</button></li>`;
+  const gl=[...new Set(words.filter(x=>!x.u&&x.g!==undefined).map(x=>x.g))].sort((a,b)=>a-b);
+  const cu=gl.map((g,k)=>({t:gnm(g),f:x=>!x.u&&x.g===g,o:g===openG||k===gl.length-1,g}));
+  if(!cu.length)cu.push({t:"ユニット外の単語（取り込み・手入力）",f:x=>!x.u,o:true});
+  const gs=[...UNITS.map(U=>({t:"Unit "+U.u,f:x=>x.u===U.u,o:false})),...cu];GS=gs;
+  return gs.map((g,k)=>{const it=words.map((x,i)=>[x,i]).filter(([x])=>g.f(x));if(!it.length&&!g.o)return"";
+    const on=it.filter(([x])=>!x.off).length,open=og[k]!==undefined?og[k]:g.o;
+    const ren=g.g!==undefined?`<div class="row" style="margin:8px 0"><input id="gn${g.g}" value="${esc(gnm(g.g))}" maxlength="30" style="margin:0" aria-label="グループ名"><button class="btn" style="flex:none" onclick="renameG(${g.g})">名前を保存</button></div>`:"";
+    const bulk=it.length?`<div class="row" style="margin:8px 0 0"><button class="btn" onclick="togG(${k},true)">このグループを全てON</button><button class="btn" onclick="togG(${k},false)">全てOFF</button></div>`:"";
+    return`<details ${open?"open":""} ontoggle="og[${k}]=this.open" style="margin-top:12px"><summary><b>${esc(g.t)}</b> <span class="box">${it.length}${g.g!==undefined?"/100":""}語 ／ 出題 ${on}</span></summary>${ren}${bulk}<ul>${it.length?it.map(([x,i])=>row(x,i)).join(""):"<li><span>まだありません。「取り込み」から追加できます。</span></li>"}</ul></details>`}).join("");
+}
+function keepScroll(fn){const y=window.scrollY;fn();window.scrollTo(0,y)}
+function setOff(x,v){if(v)delete x.off;else x.off=true}
+function togW(i,v){setOff(words[i],v);save();keepScroll(rList)}
+function togG(k,v){words.filter(GS[k].f).forEach(x=>setOff(x,v));save();keepScroll(rList)}
+function setAll(v){words.forEach(x=>setOff(x,v));save();keepScroll(rList)}
+function rList(){
+  const n=words.length,m=words.filter(x=>!x.off).length;
+  $("app").innerHTML=`${sumCard()}<div class="card" style="margin-top:12px"><b>単語を追加</b>
+    <input id="nw" placeholder="英単語 (例: reliable)" autocapitalize="none">
+    <input id="nm" placeholder="意味 (例: 信頼できる)">
+    <div class="row"><button class="btn pri" onclick="addWord()">追加</button></div></div>
+    <div class="card" style="margin-top:12px"><b>出題範囲</b>
+    <div class="hint">スイッチをONにした単語だけが、学習・クイズで出題されます。現在 <b>${m} / ${n}語</b> が出題対象です。</div>
+    <div class="row"><button class="btn" onclick="setAll(true)">全てON</button><button class="btn" onclick="setAll(false)">全てOFF</button></div>
+    ${groups()}</div>`;
+  sbInfo();
+}
+function addWord(){
+  const w=$("nw").value.trim(),m=$("nm").value.trim();
+  if(!w||!m)return;
+  words.push(mkWord(w,m));save();rList();
+}
+function delWord(i){words.splice(i,1);save();cur=null;quiz=null;rList()}
+function rStats(){
+  const n=words.length,cnt=[1,2,3,4,5].map(b=>words.filter(x=>x.box===b).length);
+  const mastered=cnt[4],pct=n?Math.round(mastered/n*100):0;
+  $("app").innerHTML=`<div class="card"><div class="box">定着度（レベル5の割合）</div><div class="big">${pct}%</div>
+    <div class="box">${mastered} / ${n} 語</div>
+    ${cnt.map((c,i)=>`<div class="bar"><span class="l">レベル ${i+1}</span><span class="t"><i style="width:${n?c/n*100:0}%"></i></span><span>${c}</span></div>`).join("")}
+    <div class="hint">「覚えた」「正解」でレベルUP、間違えるとレベル1に戻り、出題頻度が上がります。</div>
+    <div class="row"><button class="btn" onclick="if(confirm('XP・コイン・ショップの強化・ガチャの開放状況・追加した単語をすべてリセットし、Unit 1のみの状態に戻します。よろしいですか？')){words=START();save();score={c:0,t:0};prof={xp:0,coins:0,combo:0};saveProf();gz={owned:[],pulls:0};saveGz();gnames={};saveGn();hud();rStats()}">リセット</button></div></div>`;
+}
+render();showTitle();
+</script>
+</body>
+</html>
